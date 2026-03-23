@@ -29,7 +29,7 @@ typedef struct
     int32_t  data_i32;
 } ADC_typedef;
 
-#define PROGRAM_ADC_MAX_FILTER_ORDER   (5)
+#define PROGRAM_ADC_MAX_FILTER_ORDER   (6)
 typedef struct {
     float value;
     float value_last;

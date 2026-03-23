@@ -62,14 +62,14 @@ void app_setupParam_init()
 void app_setupParam_setDefolt()
 {
   // -------------------------- ADC_ADS1251 -------------------------- //
-  App.setupParam.ADC_ADS1251_order = 2; //4
+  App.setupParam.ADC_ADS1251_order = 5; //4
   App.setupParam.ADC_ADS1251_filterN = 10;  // 10
   App.setupParam.ADC_ADS1251_shift = 0.0f;
   App.setupParam.ADC_ADS1251_kMul = 1.0f;
   // ------------------------ ADC_ADS1251 END ------------------------ //
 
   // -------------------------- ADC_ADS1231 -------------------------- //
-  App.setupParam.ADC_ADS1231_order = 2;
+  App.setupParam.ADC_ADS1231_order = 5;
   App.setupParam.ADC_ADS1231_filterN = 10;
   App.setupParam.ADC_ADS1231_shift = 0.0f;
   App.setupParam.ADC_ADS1231_kMul = 1.0f;
