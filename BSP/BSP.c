@@ -220,8 +220,6 @@ uint8_t bsp_get_adr_mdb()
   }
 
   asm("Nop");
-  asm("Nop");
-  asm("Nop");
   return adr_mdb;
 }
 
@@ -371,16 +369,42 @@ int16_t bsp_get_temp_NTC_out(uint16_t value_raw)
 
 int16_t bsp_get_temp_NTC_pcb(uint16_t value_raw)
 {
-  //@do - сделать преобразования для получения температуры
   asm("Nop");
-  const bsp_point_typedef tempPoints[] = {
-    {.x = 7500.0f,  .y = 100.0f},
-    {.x = 10000.0f, .y = 85.0f},
-    {.x = 12500.0f, .y = 78.0f},
-    {.x = 20000.0f, .y = 62.0f},
-    {.x = 30000.0f, .y = 46.0f},
-    {.x = 35000.0f, .y = 40.0f},
-    {.x = 65535.0f, .y = 5.0f}};
+  const bsp_point_typedef tempPoints[] = 
+  {
+    {.x = 133.0f,  .y =  100.0f},
+    {.x = 154.0f,  .y =  95.0f},
+    {.x = 178.0f,  .y =  90.0f},
+    {.x = 208.0f,  .y =  85.0f},
+    {.x = 241.0f,  .y =  80.0f},
+    {.x = 282.0f,  .y =  75.0f},
+    {.x = 330.0f,  .y =  70.0f},
+    {.x = 386.0f,  .y =  65.0f},
+    {.x = 452.0f,  .y =  60.0f},
+    {.x = 531.0f,  .y =  55.0f},
+    {.x = 623.0f, .y =  50.0f},
+    {.x = 734.0f, .y =  45.0f},
+    {.x = 861.0f, .y =  40.0f},
+    {.x = 1008.0f, .y =  35.0f},
+    {.x = 1177.0f, .y =  30.0f},
+    {.x = 1365.0f, .y =  25.0f},
+    {.x = 1575.0f, .y =  20.0f},
+    {.x = 1803.0f, .y =  15.0f},
+    {.x = 2043.0f, .y =  10.0f},
+    {.x = 2292.0f, .y =  5.0f},
+    {.x = 2540.0f, .y =  0.0f},
+    {.x = 2781.0f, .y = -5.0f},
+    {.x = 3008.0f, .y = -10.0f},
+    {.x = 3214.0f, .y = -15.0f},
+    {.x = 3396.0f, .y = -20.0f},
+    {.x = 3551.0f, .y = -25.0f},
+    {.x = 3680.0f, .y = -30.0f},
+    {.x = 3784.0f, .y = -35.0f},
+    {.x = 3866.0f, .y = -40.0f},
+    {.x = 3929.0f, .y = -45.0f},
+    {.x = 3977.0f, .y = -50.0f},
+    {.x = 4013.0f, .y = -55.0f}
+  };
 
   const uint8_t tempPointsCount = sizeof(tempPoints) / sizeof(tempPoints[0]);
 
@@ -420,16 +444,14 @@ float bsp_lineApprox(const bsp_point_typedef *points, uint8_t count, float input
 
   return (input - points[idx - 1].x) * ((points[idx].y - points[idx - 1].y) / (points[idx].x - points[idx - 1].x)) + points[idx - 1].y;
 }
-
 // ---------------------------- ADC END ----------------------------------
 
 // ------------------------------ SPI ------------------------------------
-
 SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
 {
   uint32_t tickstart = 0;
   tickstart = HAL_GetTick();
-
+  // @do Попробовать производить только одно преобразование и сравнить будет ли больше шуметь резултат преобразования, попробовать снизить частоту преобразования до 10 Гц
   // Выход TIM1 тактирует АЦП ADS1251
   // Частота тактирования fCLK = 30720 Гц
   // Период преобразвания АЦП T = 0.0125 с, f = 80 Гц
@@ -438,7 +460,7 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
   HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_1);
 
   // Производим 5 преобразвоаний АЦП для большей точности, берем значение 5-го преобразования
-  for (uint8_t i = 0; i < 4; i++)
+  for (uint8_t i = 0; i < 5; i++)
   {
     while ((BSP_GET_DI(BSP_SPI2_MISO) == GPIO_PIN_RESET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
     while ((BSP_GET_DI(BSP_SPI2_MISO) == GPIO_PIN_SET)   && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
@@ -474,6 +496,8 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1231(uint8_t timeout)
 {
   uint32_t tickstart = 0;
   tickstart = HAL_GetTick();
+
+  // @do Попробовать производить только одно преобразование и сравнить будет ли больше шуметь резултат преобразования, попробовать снизить частоту преобразования до 10 Гц
   // Период преобразвания АЦП T = 0.0125 с, f = 80 Гц
   
   //#define TEST_ADS1231
@@ -489,7 +513,7 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1231(uint8_t timeout)
   while ((BSP_GET_DI(BSP_SPI1_MISO) == GPIO_PIN_RESET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
 
   // Производим 5 преобразвоаний АЦП для большей точности, берем значение 5-го преобразования
-  for (uint8_t i = 0; i < 1; i++)
+  for (uint8_t i = 0; i < 5; i++)
   {
     while ((BSP_GET_DI(BSP_SPI1_MISO) == GPIO_PIN_SET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
 

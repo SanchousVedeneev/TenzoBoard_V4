@@ -62,14 +62,14 @@ void app_setupParam_init()
 void app_setupParam_setDefolt()
 {
   // -------------------------- ADC_ADS1251 -------------------------- //
-  App.setupParam.ADC_ADS1251_order = 4;
-  App.setupParam.ADC_ADS1251_filterN = 10;
+  App.setupParam.ADC_ADS1251_order = 2; //4
+  App.setupParam.ADC_ADS1251_filterN = 10;  // 10
   App.setupParam.ADC_ADS1251_shift = 0.0f;
   App.setupParam.ADC_ADS1251_kMul = 1.0f;
   // ------------------------ ADC_ADS1251 END ------------------------ //
 
   // -------------------------- ADC_ADS1231 -------------------------- //
-  App.setupParam.ADC_ADS1231_order = 4;
+  App.setupParam.ADC_ADS1231_order = 2;
   App.setupParam.ADC_ADS1231_filterN = 10;
   App.setupParam.ADC_ADS1231_shift = 0.0f;
   App.setupParam.ADC_ADS1231_kMul = 1.0f;
@@ -142,7 +142,7 @@ void app_update_reg()
 
 #define ADC_ADS1251_MAX_VAL (float)(8388607.0f)
 // #define ADC_ADS1251_MAX_VAL (float)(4194303.0f)
-#define ADC_ADS1251_REF_VOLT (float)(2.5f)
+#define ADC_ADS1251_REF_VOLT (float)(5.0f)
 
 #define ADC_ADS1231_MAX_VAL (float)(4194303.0f)
 // #define ADC_ADS1231_MAX_VAL (float)(8388608.0f)

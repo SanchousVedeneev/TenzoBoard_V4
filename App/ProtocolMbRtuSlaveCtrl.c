@@ -172,6 +172,9 @@ __INLINE void protocolMbRtuSlaveCtrl_update_tables()
   ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i32_HW,     (uint16_t)((App.ADC_ADS1231.data_i32 & 0xFFFF0000UL) >> 16));
   ModbusSS_SetWord(&mdb_table_adc, tab_adc_state,                   Bsp.SPI_ADC_state);
 
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_out_i16,             Bsp.AI.NTC[NTC_out].value);
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_pcb_i16,             Bsp.AI.NTC[NTC_pcb].value);
+
 }
 //------------------------ REGULAR FCN END------------------------
 
