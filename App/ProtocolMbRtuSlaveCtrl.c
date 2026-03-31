@@ -211,6 +211,8 @@ __weak void protocolMbRtuSlaveCtrl_callback_H_WRITE(ModbusSS_table_t *table, uin
         app_flash_save();
         break;
       case 2:
+        app_setupParam_setDefolt();
+      case 3:
         App_reset();
         break;
       default:

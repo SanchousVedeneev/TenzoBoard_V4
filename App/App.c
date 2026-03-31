@@ -69,6 +69,8 @@ void app_setupParam_setDefolt()
   App.setupParam.ADC_ADS1231_shift = 0.0f;
   App.setupParam.ADC_ADS1231_kMul = 1.0f;
   // ------------------------ ADC_ADS1231 END ------------------------ //
+
+  App.setupParam.Upr_heating = HEATING_AUTO;
   return;
 }
 
