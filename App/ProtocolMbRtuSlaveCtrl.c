@@ -25,16 +25,17 @@ enum mdb_table_bsp
 
   tab_bsp_spi_read_state,
 
-  tab_bsp_DI_state,
+  tab_bsp_REZERV_12,
   tab_bsp_DI_rele_state,
   
   tab_bsp_DO_control,
-  tab_bsp_control,
+  tab_bsp_REZERV_15,
 
   tab_bsp_AI_NTC_out_value_raw,
-  tab_bsp_AI_NTC_pcb_value_raw
+  tab_bsp_AI_NTC_pcb_value_raw,
+  tab_bsp_CMD
 };
-#define MDB_BSP_BUF_COUNT (tab_bsp_AI_NTC_pcb_value_raw - MDB_TABLE_BSP_REG_NO + 1)
+#define MDB_BSP_BUF_COUNT (tab_bsp_CMD - MDB_TABLE_BSP_REG_NO + 1)
 uint16_t mdb_bsp_buf[MDB_BSP_BUF_COUNT];
 
 ModbusSS_table_t mdb_table_bsp = {
@@ -44,38 +45,40 @@ ModbusSS_table_t mdb_table_bsp = {
     .type = ModbusSS_Holding};
 
 //---101
-#define MDB_TABLE_ANALOG_REG_NO (101)
-enum mdb_table_analog
+#define MDB_TABLE_SETUP_REG_NO (101)
+enum mdb_table_setup
 {
-  tab_analog_ADS1251_filter_N = MDB_TABLE_ANALOG_REG_NO,
-  tab_analog_ADS1251_order,
-  tab_analog_ADS1251_shift,
-  tab_analog_ADS1251_kMul,
+  tab_setup_ADS1251_filter_N = MDB_TABLE_SETUP_REG_NO,
+  tab_setup_ADS1251_order,
+  tab_setup_ADS1251_shift,
+  tab_setup_ADS1251_kMul,
 
-  tab_analog_ADS1231_filter_N,
-  tab_analog_ADS1231_order,
-  tab_analog_ADS1231_shift,
-  tab_analog_ADS1231_kMul,
+  tab_setup_ADS1231_filter_N,
+  tab_setup_ADS1231_order,
+  tab_setup_ADS1231_shift,
+  tab_setup_ADS1231_kMul,
+
+  tab_setup_Upr_heating
 };
-#define MDB_ANALOG_BUF_COUNT (tab_analog_ADS1231_kMul - MDB_TABLE_ANALOG_REG_NO + 1)
-uint16_t mdb_analog_buf[MDB_ANALOG_BUF_COUNT];
-ModbusSS_table_t mdb_table_analog = {
-    .buf = (uint8_t *)mdb_analog_buf,
-    .quantity = MDB_ANALOG_BUF_COUNT,
-    .regNo = MDB_TABLE_ANALOG_REG_NO,
+#define MDB_SETUP_BUF_COUNT (tab_setup_Upr_heating - MDB_TABLE_SETUP_REG_NO + 1)
+uint16_t mdb_setup_buf[MDB_SETUP_BUF_COUNT];
+ModbusSS_table_t mdb_table_setup = {
+    .buf = (uint8_t *)mdb_setup_buf,
+    .quantity = MDB_SETUP_BUF_COUNT,
+    .regNo = MDB_TABLE_SETUP_REG_NO,
     .type = ModbusSS_Holding};
 
 //---201
 #define MDB_TABLE_ADC_REG_NO (201)
 enum mdb_table_adc
 {
-  tab_adc_ADS1251_data_i16 = MDB_TABLE_ADC_REG_NO,
-  tab_adc_ADS1251_data_i32_LW,
-  tab_adc_ADS1251_data_i32_HW,
+  tab_adc_ADS1251_data_i16_x100 = MDB_TABLE_ADC_REG_NO,
+  tab_adc_ADS1251_data_i16_x1000,
+  tab_adc_ADS1251_RESERV_203,
 
-  tab_adc_ADS1231_data_i16,
-  tab_adc_ADS1231_data_i32_LW,
-  tab_adc_ADS1231_data_i32_HW,
+  tab_adc_ADS1231_data_i16_x100,
+  tab_adc_ADS1231_data_i16_x1000,
+  tab_adc_ADS1251_RESERV_206,
   tab_adc_state,
 
   tab_adc_NTC_out_i16,
@@ -94,7 +97,7 @@ ModbusSS_table_t mdb_table_adc = {
 //--------------------  TABLES ARRAY ---------------------//
 ModbusSS_table_t *modbusTables[] = {
   &mdb_table_bsp,
-  &mdb_table_analog,
+  &mdb_table_setup,
   &mdb_table_adc
 };
 //--------------------  TABLES ARRAY END---------------------//
@@ -128,6 +131,7 @@ void protocolMbRtuSlaveCtrl_init(uint8_t portNo)
 
 __INLINE void protocolMbRtuSlaveCtrl_update_tables()
 {
+  float k_1000 = 1000.0f;
   // --mdb_table_bsp
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_buf_8b_ADS1251_0,        Bsp.ADC_ADS1251.spi_buf[0]);
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_buf_8b_ADS1251_1,        Bsp.ADC_ADS1251.spi_buf[1]);
@@ -143,7 +147,6 @@ __INLINE void protocolMbRtuSlaveCtrl_update_tables()
 
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_spi_read_state,          Bsp.SPI_ADC_state);
 
-  ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_DI_state,                App.DI_state);
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_DI_rele_state,           App.DI_rele_state);
 
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_DO_control,              App.DO_control);
@@ -152,24 +155,25 @@ __INLINE void protocolMbRtuSlaveCtrl_update_tables()
   ModbusSS_SetWord(&mdb_table_bsp, tab_bsp_AI_NTC_pcb_value_raw,    Bsp.AI.NTC[NTC_pcb].value_raw);
 
   // --mdb_table_analog
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1251_filter_N,  App.adc_filter[ADC_ADS1251].filter_N);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1251_order,     App.adc_filter[ADC_ADS1251].order);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1251_shift,     (uint16_t)App.adc_filter[ADC_ADS1251].shift);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1251_kMul,      (uint16_t)App.adc_filter[ADC_ADS1251].kMul);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1251_filter_N,  App.setupParam.ADC_ADS1251_filterN);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1251_order,     App.setupParam.ADC_ADS1251_order);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1251_shift,     (uint16_t)App.setupParam.ADC_ADS1251_shift);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1251_kMul,      (uint16_t)(App.setupParam.ADC_ADS1251_kMul*k_1000));
 
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1231_filter_N,  App.adc_filter[ADC_ADS1231].filter_N);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1231_order,     App.adc_filter[ADC_ADS1231].order);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1231_shift,     (uint16_t)App.adc_filter[ADC_ADS1231].shift);
-  ModbusSS_SetWord(&mdb_table_analog, tab_analog_ADS1231_kMul,      (uint16_t)App.adc_filter[ADC_ADS1231].kMul);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1231_filter_N,  App.setupParam.ADC_ADS1231_filterN);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1231_order,     App.setupParam.ADC_ADS1231_order);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1231_shift,     (uint16_t)App.setupParam.ADC_ADS1231_shift);
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_ADS1231_kMul,      (uint16_t)(App.setupParam.ADC_ADS1231_kMul*k_1000));
+
+  ModbusSS_SetWord(&mdb_table_setup, tab_setup_Upr_heating,       App.setupParam.Upr_heating);
 
   // --mdb_table_adc
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1251_data_i16,        App.ADC_ADS1251.data_i16);
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1251_data_i32_LW,     (uint16_t)(App.ADC_ADS1251.data_i32 & 0x0000FFFFUL));
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1251_data_i32_HW,     (uint16_t)((App.ADC_ADS1251.data_i32 & 0xFFFF0000UL) >> 16));
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1251_data_i16_x100,   App.ADC_ADS1251.data_i16_x100);
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1251_data_i16_x1000,  App.ADC_ADS1251.data_i16_x1000);
 
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i16,        App.ADC_ADS1231.data_i16);
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i32_LW,     (uint16_t)(App.ADC_ADS1231.data_i32 & 0x0000FFFFUL));
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i32_HW,     (uint16_t)((App.ADC_ADS1231.data_i32 & 0xFFFF0000UL) >> 16));
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i16_x100,   App.ADC_ADS1231.data_i16_x100);
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_ADS1231_data_i16_x1000,  App.ADC_ADS1231.data_i16_x1000);
+
   ModbusSS_SetWord(&mdb_table_adc, tab_adc_state,                   Bsp.SPI_ADC_state);
 
   ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_out_i16,             Bsp.AI.NTC[NTC_out].value);
@@ -181,7 +185,7 @@ __INLINE void protocolMbRtuSlaveCtrl_update_tables()
 //------------------------------- MODBUS CALLBACKS -------------------------------------------//
 __weak void protocolMbRtuSlaveCtrl_callback_H_WRITE(ModbusSS_table_t *table, uint16_t reg, uint16_t quantity)
 {
-
+  float k_001 = 0.001f;
   uint16_t value = 0;
   asm("NOP");
 
@@ -193,21 +197,68 @@ __weak void protocolMbRtuSlaveCtrl_callback_H_WRITE(ModbusSS_table_t *table, uin
     case tab_bsp_DO_control:
       if (BSP_GET_BIT(value, 0) == 1)
       {
-        BSP_TERM_OUT_ON;
         BSP_SET_BIT(App.DO_control, 0);
       }
       else
       {
-        BSP_TERM_OUT_OFF;
         BSP_RESET_BIT(App.DO_control, 0);
+      }
+      break;
+    case tab_bsp_CMD:
+      switch (value)
+      {
+      case 1:
+        app_flash_save();
+        break;
+      case 2:
+        App_reset();
+        break;
+      default:
+        break;
       }
       break;
     default:
       break;
     }
   }
-  
+  else if (table == &mdb_table_setup)
+  {
+    value = ModbusSS_GetWord(&mdb_table_setup, reg);
+    switch (reg)
+    {
+    case tab_setup_ADS1251_filter_N:
+      app_set_ADC_ADS1251_filterN(value);
+      break;
+    case tab_setup_ADS1251_order:
+      app_set_ADC_ADS1251_order(value);
+      break;
+    case tab_setup_ADS1251_shift:
+      app_set_ADC_ADS1251_shift(value);
+      break;
+    case tab_setup_ADS1251_kMul:
+      app_set_ADC_ADS1251_kMul(((float)value)*k_001);
+      break;
+    case tab_setup_ADS1231_filter_N:
+      app_set_ADC_ADS1231_filterN(value);
+      break;
+    case tab_setup_ADS1231_order:
+      app_set_ADC_ADS1231_order(value);
+      break;
+    case tab_setup_ADS1231_shift:
+      app_set_ADC_ADS1231_shift(value);
+      break;
+    case tab_setup_ADS1231_kMul:
+      app_set_ADC_ADS1231_kMul(((float)value)*k_001);
+      break;
+    case tab_setup_Upr_heating:
+      app_set_Upr_heating(value);
+      break;
+    default:
+      break;
+    }
+  }
 }
+
 
 __weak void protocolMbRtuSlaveCtrl_callback_H_READ(ModbusSS_table_t *table, uint16_t reg, uint16_t quantity)
 {

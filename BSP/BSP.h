@@ -97,8 +97,6 @@ typedef struct
     uint32_t data_raw;
 } SPI_ADC_typedef;
 
-
-
 typedef enum
 {
     NTC_out = 0,

@@ -3,12 +3,15 @@
 
 #include "main.h"
 
+
 typedef enum
 {
     ADC_ADS1251 = 0,
     ADC_ADS1231 = 1,
 } ADC_enum;
 
+#define HEATING_AUTO   (0)
+#define HEATING_MANUAL (1)
 typedef struct 
 {
     uint8_t ADC_ADS1251_order;
@@ -21,12 +24,13 @@ typedef struct
     float ADC_ADS1231_shift;
     float ADC_ADS1231_kMul;
 
+    uint8_t Upr_heating;
 } setupParam_typedef;
 
 typedef struct 
 {
-    int16_t  data_i16;
-    int32_t  data_i32;
+    int16_t  data_i16_x100;
+    int32_t  data_i16_x1000;
 } ADC_typedef;
 
 #define PROGRAM_ADC_MAX_FILTER_ORDER   (6)
@@ -50,7 +54,6 @@ typedef struct
     ADC_typedef ADC_ADS1231;
     int16_t ADC_T_data_i16;
     setupParam_typedef setupParam;
-    uint8_t DI_state;
     uint8_t DI_rele_state;
     uint8_t DO_control;
     int16_t AI_NTC_out_value;
@@ -66,7 +69,23 @@ void app_adc_filter_init();
 void app_setupParam_init();
 void app_setupParam_setDefolt();
 
+void app_set_ADC_ADS1251_filterN(uint16_t value);
+void app_set_ADC_ADS1251_order(uint16_t value);
+void app_set_ADC_ADS1251_shift(uint16_t value);
+void app_set_ADC_ADS1251_kMul(float value);
 
+void app_set_ADC_ADS1231_filterN(uint16_t value);
+void app_set_ADC_ADS1231_order(uint16_t value);
+void app_set_ADC_ADS1231_shift(uint16_t value);
+void app_set_ADC_ADS1231_kMul(float value);
+
+void app_set_Upr_heating(uint16_t value);
+
+void app_flash_load();
+
+void app_flash_save();
+
+void App_reset();
 //---------------------------- FUNCTION END ----------------------------//
 
 #endif

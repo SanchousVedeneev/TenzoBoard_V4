@@ -22,7 +22,6 @@ void bsp_init()
   return;
 }
 // ---------------------------- INIT END ----------------------------
-
 // ------------------------------ RS485 ------------------------------
 #define BSP_RS485_1 huart1
 
@@ -137,78 +136,12 @@ uint8_t bsp_get_adr_mdb()
 {
   uint8_t adr_mdb = 0;
 
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_0) << 0;
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_1) << 1;
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_2) << 2;
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_3) << 3;
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_4) << 4;
-  // adr_mdb |= BSP_GET_DI(BSP_ADR_5) << 5;
-
-  if (BSP_GET_DI(BSP_ADR_0) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 0);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 0);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_1) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 1);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 1);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_2) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 2);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 2);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_3) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 3);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 3);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_4) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 4);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 4);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_5) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 5);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 5);
-    asm("Nop");
-  }
+  adr_mdb |= BSP_GET_DI(BSP_ADR_0) << 0;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_1) << 1;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_2) << 2;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_3) << 3;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_4) << 4;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_5) << 5;
 
   if (adr_mdb < ADR_MDB_MIN)
   {
@@ -226,72 +159,12 @@ uint8_t bsp_get_adr_mdb()
 uint8_t bsp_get_rele_state()
 {
   uint8_t adr_mdb = 0;
-
-  if (BSP_GET_DI(BSP_ADR_0) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 0);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 0);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_1) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 1);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 1);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_2) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 2);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 2);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_3) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 3);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 3);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_4) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 4);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 4);
-    asm("Nop");
-  }
-
-  if (BSP_GET_DI(BSP_ADR_5) == GPIO_PIN_SET)
-  {
-    BSP_SET_BIT(adr_mdb, 5);
-    asm("Nop");
-  }
-  else
-  {
-    BSP_RESET_BIT(adr_mdb, 5);
-    asm("Nop");
-  }
+  adr_mdb |= BSP_GET_DI(BSP_ADR_0) << 0;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_1) << 1;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_2) << 2;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_3) << 3;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_4) << 4;
+  adr_mdb |= BSP_GET_DI(BSP_ADR_5) << 5;
 
   return adr_mdb;
 }
@@ -348,19 +221,42 @@ __weak void bsp_ADC_data_ready()
   asm("Nop");
 }
 
-
 int16_t bsp_get_temp_NTC_out(uint16_t value_raw)
 {
-  //@do - сделать преобразования для получения температуры
   asm("Nop");
   const bsp_point_typedef tempPoints[] = {
-    {.x = 7500.0f,  .y = 100.0f},
-    {.x = 10000.0f, .y = 85.0f},
-    {.x = 12500.0f, .y = 78.0f},
-    {.x = 20000.0f, .y = 62.0f},
-    {.x = 30000.0f, .y = 46.0f},
-    {.x = 35000.0f, .y = 40.0f},
-    {.x = 65535.0f, .y = 5.0f}};
+    {.x = 176.0f,  .y = 100.0f},
+    {.x = 210.0f,  .y = 95.0f},
+    {.x = 246.0f,  .y = 90.0f},
+    {.x = 293.0f,  .y = 85.0f},
+    {.x = 349.0f,  .y = 80.0f},
+    {.x = 416.0f,  .y = 75.0f},
+    {.x = 494.0f,  .y = 70.0f},
+    {.x = 589.0f,  .y = 65.0f},
+    {.x = 700.0f,  .y = 60.0f},
+    {.x = 827.0f,  .y = 55.0f},
+    {.x = 979.0f,  .y = 50.0f},
+    {.x = 1151.0f, .y = 45.0f},
+    {.x = 1347.0f, .y = 40.0f},
+    {.x = 1564.0f, .y = 35.0f},
+    {.x = 1800.0f, .y = 30.0f},
+    {.x = 2048.0f, .y = 25.0f},
+    {.x = 2301.0f, .y = 20.0f},
+    {.x = 2551.0f, .y = 15.0f},
+    {.x = 2191.0f, .y = 10.0f},
+    {.x = 3016.0f, .y = 5.0f},
+    {.x = 3220.0f, .y = 0.0f},
+    {.x = 3400.0f, .y = -5.0f},
+    {.x = 3553.0f, .y = -10.0f},
+    {.x = 3680.0f, .y = -15.0f},
+    {.x = 3783.0f, .y = -20.0f},
+    {.x = 3862.0f, .y = -25.0f},
+    {.x = 3924.0f, .y = -30.0f},
+    {.x = 3970.0f, .y = -35.0f},
+    {.x = 4004.0f, .y = -40.0f},
+    {.x = 4030.0f, .y = -45.0f},
+    {.x = 4049.0f, .y = -50.0f},
+    {.x = 4062.0f, .y = -55.0f}};
 
   const uint8_t tempPointsCount = sizeof(tempPoints) / sizeof(tempPoints[0]);
 
@@ -382,9 +278,9 @@ int16_t bsp_get_temp_NTC_pcb(uint16_t value_raw)
     {.x = 386.0f,  .y =  65.0f},
     {.x = 452.0f,  .y =  60.0f},
     {.x = 531.0f,  .y =  55.0f},
-    {.x = 623.0f, .y =  50.0f},
-    {.x = 734.0f, .y =  45.0f},
-    {.x = 861.0f, .y =  40.0f},
+    {.x = 623.0f,  .y =  50.0f},
+    {.x = 734.0f,  .y =  45.0f},
+    {.x = 861.0f,  .y =  40.0f},
     {.x = 1008.0f, .y =  35.0f},
     {.x = 1177.0f, .y =  30.0f},
     {.x = 1365.0f, .y =  25.0f},
@@ -451,7 +347,7 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
 {
   uint32_t tickstart = 0;
   tickstart = HAL_GetTick();
-  // @do Попробовать производить только одно преобразование и сравнить будет ли больше шуметь резултат преобразования, попробовать снизить частоту преобразования до 10 Гц
+
   // Выход TIM1 тактирует АЦП ADS1251
   // Частота тактирования fCLK = 30720 Гц
   // Период преобразвания АЦП T = 0.0125 с, f = 80 Гц
@@ -480,6 +376,9 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
   Bsp.ADC_ADS1251.data_raw |= ((uint32_t)Bsp.ADC_ADS1251.spi_buf[1] << 8);
   Bsp.ADC_ADS1251.data_raw |= ((uint32_t)Bsp.ADC_ADS1251.spi_buf[2] << 0);
 
+  // Убираем последние 6 бит (они неэффективные только шумят)
+  Bsp.ADC_ADS1251.data_raw &= (uint32_t)(0xFFFFC0UL);
+
   if ((HAL_GetTick() - tickstart) >=  timeout)
   {
     BSP_SET_BIT(Bsp.SPI_ADC_state, 0);
@@ -496,28 +395,17 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1231(uint8_t timeout)
 {
   uint32_t tickstart = 0;
   tickstart = HAL_GetTick();
-
-  // @do Попробовать производить только одно преобразование и сравнить будет ли больше шуметь резултат преобразования, попробовать снизить частоту преобразования до 10 Гц
   // Период преобразвания АЦП T = 0.0125 с, f = 80 Гц
-  
-  //#define TEST_ADS1231
-  #ifdef TEST_ADS1231
-    HAL_SPI_Receive(&hspi1, &Bsp.ADC_ADS1231.spi_buf[0], 4, 1);
-    Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[0] << 16);
-    Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[1] << 8);
-    Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[2] << 0);
-    return Bsp.ADC_ADS1231.data_raw;
-  #endif
 
   while ((BSP_GET_DI(BSP_SPI1_MISO) == GPIO_PIN_SET)   && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
   while ((BSP_GET_DI(BSP_SPI1_MISO) == GPIO_PIN_RESET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
-
+  
   // Производим 5 преобразвоаний АЦП для большей точности, берем значение 5-го преобразования
   for (uint8_t i = 0; i < 5; i++)
   {
     while ((BSP_GET_DI(BSP_SPI1_MISO) == GPIO_PIN_SET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
 
-    for (uint8_t i = 0; i < 200; i++) { asm("Nop"); }
+    for (uint16_t i = 0; i < 200; i++) { asm("Nop"); }
 
     HAL_SPI_Receive(&hspi1, &Bsp.ADC_ADS1231.spi_buf[0], 4, 2);
   }
@@ -525,6 +413,9 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1231(uint8_t timeout)
   Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[0] << 16);
   Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[1] << 8);
   Bsp.ADC_ADS1231.data_raw |= ((uint32_t)Bsp.ADC_ADS1231.spi_buf[2] << 0);
+
+  // Убираем последние 6 бит (они неэффективные только шумят)
+  Bsp.ADC_ADS1231.data_raw &= (uint32_t)(0xFFFFC0UL);
 
   if ((HAL_GetTick() - tickstart) >=  timeout)
   {
