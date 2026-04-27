@@ -353,7 +353,8 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
   // Период преобразвания АЦП T = 0.0125 с, f = 80 Гц
 
   // Включаем тактирование АЦП
-  HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_1);
+  // HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_1);
 
   // Производим 5 преобразвоаний АЦП для большей точности, берем значение 5-го преобразования
   for (uint8_t i = 0; i < 5; i++)
@@ -363,13 +364,14 @@ SPI_ADC_status_typedef bsp_get_data_spi_ads1251(uint8_t timeout)
     while ((BSP_GET_DI(BSP_SPI2_MISO) == GPIO_PIN_RESET) && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
     while ((BSP_GET_DI(BSP_SPI2_MISO) == GPIO_PIN_SET)   && ((HAL_GetTick() - tickstart) <  timeout))  { asm("Nop"); }
 
-    for (uint8_t i = 0; i < 50; i++) { asm("Nop"); }
+    // for (uint8_t i = 0; i < 50; i++) { asm("Nop"); }
 
-    HAL_SPI_Receive(&hspi2, &Bsp.ADC_ADS1251.spi_buf[0], 4, 1);
+    HAL_SPI_Receive(&hspi2, &Bsp.ADC_ADS1251.spi_buf[0], 4, 5);
   }
 
   // Выключаем тактирование АЦП
-  HAL_TIM_OC_Stop_IT(&htim1, TIM_CHANNEL_1);
+  // HAL_TIM_OC_Stop_IT(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_OC_Stop(&htim1, TIM_CHANNEL_1);
 
   Bsp.ADC_ADS1251.data_raw = 0;
   Bsp.ADC_ADS1251.data_raw |= ((uint32_t)Bsp.ADC_ADS1251.spi_buf[0] << 16);
