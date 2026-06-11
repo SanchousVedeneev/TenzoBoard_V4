@@ -176,8 +176,8 @@ __INLINE void protocolMbRtuSlaveCtrl_update_tables()
 
   ModbusSS_SetWord(&mdb_table_adc, tab_adc_state,                   Bsp.SPI_ADC_state);
 
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_out_i16,             Bsp.AI.NTC[NTC_out].value);
-  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_pcb_i16,             Bsp.AI.NTC[NTC_pcb].value);
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_out_i16,             (int16_t)Bsp.AI.NTC[NTC_out].value);
+  ModbusSS_SetWord(&mdb_table_adc, tab_adc_NTC_pcb_i16,             (int16_t)Bsp.AI.NTC[NTC_pcb].value);
 
 }
 //------------------------ REGULAR FCN END------------------------
@@ -195,14 +195,7 @@ __weak void protocolMbRtuSlaveCtrl_callback_H_WRITE(ModbusSS_table_t *table, uin
     switch (reg)
     {
     case tab_bsp_DO_control:
-      if (BSP_GET_BIT(value, 0) == 1)
-      {
-        BSP_SET_BIT(App.DO_control, 0);
-      }
-      else
-      {
-        BSP_RESET_BIT(App.DO_control, 0);
-      }
+      app_set_DO_contol(value);
       break;
     case tab_bsp_CMD:
       switch (value)

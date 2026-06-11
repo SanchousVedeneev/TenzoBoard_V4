@@ -179,6 +179,31 @@ void app_set_Upr_heating(uint16_t value)
   return;
 }
 
+void app_set_DO_contol(uint16_t value)
+{
+  if (App.setupParam.Upr_heating == HEATING_AUTO)
+  {
+    asm("Nop");
+  }
+  else if (App.setupParam.Upr_heating == HEATING_MANUAL)
+  {
+    if (BSP_GET_BIT(value, 0) == 1)
+    {
+      BSP_SET_BIT(App.DO_control, 0);
+    }
+    else
+    {
+      BSP_RESET_BIT(App.DO_control, 0);
+    }
+  }
+  else
+  {
+    // Ошибка
+    asm("Nop");
+  }
+  return;
+}
+
 void app_adc_filter_init()
 {
   // -------------------------- ADC_ADS1251 -------------------------- //
@@ -213,35 +238,45 @@ void app_adc_filter_init()
   return;
 }
 
-#define T_BOARD_ON_HEATING (20)
-#define T_BOARD_OFF_HEATING (30)
+#define T_BOARD_ON_HEATING_AUTO    (20.0)
+#define T_BOARD_OFF_HEATING_AUTO   (30.0)
+#define T_BOARD_OFF_HEATING_ALWAYS (40.0)
 void bsp_tim7_100ms_callback()
 {
   app_update_reg();
   protocolMbRtuSlaveCtrl_update_tables();
 
+  // Управление нагревом в режиме AUTO
   if (App.setupParam.Upr_heating == HEATING_AUTO)
   {
-    if (Bsp.AI.NTC[NTC_pcb].value <= T_BOARD_ON_HEATING)
+    if (Bsp.AI.NTC[NTC_pcb].value <= T_BOARD_ON_HEATING_AUTO)
     {
-      BSP_TERM_OUT_ON;
+      BSP_SET_BIT(App.DO_control, 0);
     }
-    else if (Bsp.AI.NTC[NTC_pcb].value >= T_BOARD_OFF_HEATING)
+    else if (Bsp.AI.NTC[NTC_pcb].value >= T_BOARD_OFF_HEATING_AUTO)
     {
-      BSP_TERM_OUT_OFF;
+      BSP_RESET_BIT(App.DO_control, 0);
     }
   }
-  else if (App.setupParam.Upr_heating == HEATING_MANUAL)
+
+  // Общее управление нагревом
+  if (Bsp.AI.NTC[NTC_pcb].value < T_BOARD_OFF_HEATING_ALWAYS)
   {
     if (BSP_GET_BIT(App.DO_control, 0) == 1)
     {
       BSP_TERM_OUT_ON;
     }
-    else
+    else if (BSP_GET_BIT(App.DO_control, 0) == 0)
     {
       BSP_TERM_OUT_OFF;
     }
   }
+  else
+  {
+    BSP_RESET_BIT(App.DO_control, 0);
+    BSP_TERM_OUT_OFF;
+  }
+
   return;
 }
 
@@ -256,7 +291,7 @@ void app_update_reg()
 
   // --- ADC_ADS1231
   App.ADC_ADS1231.data_i16_x100  = (int16_t)(App.adc_filter[ADC_ADS1231].value * K_X1000);    // [мВ*100]
-  App.ADC_ADS1231.data_i16_x1000 = (int16_t)(App.adc_filter[ADC_ADS1231].value * K_X10000);   // [мВ*10000]
+  App.ADC_ADS1231.data_i16_x1000 = (int16_t)(App.adc_filter[ADC_ADS1231].value * K_X10000);   // [мВ*1000]
 
   // --- DI_rele_state
   App.DI_rele_state = bsp_get_rele_state();

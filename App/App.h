@@ -30,7 +30,7 @@ typedef struct
 typedef struct 
 {
     int16_t  data_i16_x100;
-    int32_t  data_i16_x1000;
+    int16_t  data_i16_x1000;
 } ADC_typedef;
 
 #define PROGRAM_ADC_MAX_FILTER_ORDER   (6)
@@ -80,6 +80,8 @@ void app_set_ADC_ADS1231_shift(uint16_t value);
 void app_set_ADC_ADS1231_kMul(float value);
 
 void app_set_Upr_heating(uint16_t value);
+
+void app_set_DO_contol(uint16_t value);
 
 void app_flash_load();
 
