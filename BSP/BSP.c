@@ -208,8 +208,24 @@ void ADC1_2_IRQHandler(void)
   {
     __HAL_ADC_CLEAR_FLAG(&hadc2, ADC_FLAG_JEOS);
 
-    Bsp.AI.NTC[NTC_out].value_raw = HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1)/16;
-    Bsp.AI.NTC[NTC_pcb].value_raw = HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2)/16;
+    static float NTC_out_raw = 0.0f;
+    static float NTC_out_old = 0.0f;
+    static float NTC_out_    = 0.0f;
+    
+    static float NTC_pcb_raw = 0.0f;
+    static float NTC_pcb_old = 0.0f;
+    static float NTC_pcb_    = 0.0f;
+
+    NTC_out_raw = HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1)/16;
+    NTC_pcb_raw = HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2)/16;
+
+    NTC_out_ = NTC_out_old + 0.1*(NTC_out_raw - NTC_out_old);
+    NTC_out_old = NTC_out_;
+    NTC_pcb_ = NTC_pcb_old + 0.1*(NTC_pcb_raw - NTC_pcb_old);
+    NTC_pcb_old = NTC_pcb_;
+
+    Bsp.AI.NTC[NTC_out].value_raw = NTC_out_;
+    Bsp.AI.NTC[NTC_pcb].value_raw = NTC_pcb_;
 
     Bsp.AI.NTC[NTC_out].value = bsp_get_temp_NTC_out(Bsp.AI.NTC[NTC_out].value_raw);
     Bsp.AI.NTC[NTC_pcb].value = bsp_get_temp_NTC_pcb(Bsp.AI.NTC[NTC_pcb].value_raw);
@@ -220,10 +236,12 @@ __weak void bsp_ADC_data_ready()
 {
   asm("Nop");
 }
-
+//#define NTC_ONLY
+#define NTC_AND_R_PARALLEL
 int16_t bsp_get_temp_NTC_out(uint16_t value_raw)
 {
   asm("Nop");
+  #ifdef NTC_ONLY
   const bsp_point_typedef tempPoints[] = {
     {.x = 176.0f,  .y = 100.0f},
     {.x = 210.0f,  .y = 95.0f},
@@ -257,7 +275,43 @@ int16_t bsp_get_temp_NTC_out(uint16_t value_raw)
     {.x = 4030.0f, .y = -45.0f},
     {.x = 4049.0f, .y = -50.0f},
     {.x = 4062.0f, .y = -55.0f}};
+    #endif
 
+  #ifdef NTC_AND_R_PARALLEL
+  const bsp_point_typedef tempPoints[] = {
+    {.x = 173.0f,  .y = 100.0f},
+    {.x = 205.0f,  .y = 95.0f},
+    {.x = 240.0f,  .y = 90.0f},
+    {.x = 284.0f,  .y = 85.0f},
+    {.x = 337.0f,  .y = 80.0f},
+    {.x = 399.0f,  .y = 75.0f},
+    {.x = 470.0f,  .y = 70.0f},
+    {.x = 556.0f,  .y = 65.0f},
+    {.x = 653.0f,  .y = 60.0f},
+    {.x = 763.0f,  .y = 55.0f},
+    {.x = 890.0f,  .y = 50.0f},
+    {.x = 1031.0f, .y = 45.0f},
+    {.x = 1185.0f, .y = 40.0f},
+    {.x = 1350.0f, .y = 35.0f},
+    {.x = 1521.0f, .y = 30.0f},
+    {.x = 1695.0f, .y = 25.0f},
+    {.x = 1865.0f, .y = 20.0f},
+    {.x = 2025.0f, .y = 15.0f},
+    {.x = 2174.0f, .y = 10.0f},
+    {.x = 2308.0f, .y = 5.0f},
+    {.x = 2426.0f, .y = 0.0f},
+    {.x = 2526.0f, .y = -5.0f},
+    {.x = 2610.0f, .y = -10.0f},
+    {.x = 2678.0f, .y = -15.0f},
+    {.x = 2732.0f, .y = -20.0f},
+    {.x = 2773.0f, .y = -25.0f},
+    {.x = 2804.0f, .y = -30.0f},
+    {.x = 2828.0f, .y = -35.0f},
+    {.x = 2845.0f, .y = -40.0f},
+    {.x = 2858.0f, .y = -45.0f},
+    {.x = 2868.0f, .y = -50.0f},
+    {.x = 2874.0f, .y = -55.0f}};
+  #endif
   const uint8_t tempPointsCount = sizeof(tempPoints) / sizeof(tempPoints[0]);
 
   return bsp_lineApprox(tempPoints, tempPointsCount, value_raw);

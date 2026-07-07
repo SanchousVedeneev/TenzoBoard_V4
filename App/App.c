@@ -58,14 +58,14 @@ void app_setupParam_setDefolt()
 {
   // -------------------------- ADC_ADS1251 -------------------------- //
   App.setupParam.ADC_ADS1251_order = 5;
-  App.setupParam.ADC_ADS1251_filterN = 20;
+  App.setupParam.ADC_ADS1251_filterN = 100;
   App.setupParam.ADC_ADS1251_shift = 0.0f;
   App.setupParam.ADC_ADS1251_kMul = 1.0f;
   // ------------------------ ADC_ADS1251 END ------------------------ //
 
   // -------------------------- ADC_ADS1231 -------------------------- //
   App.setupParam.ADC_ADS1231_order = 5;
-  App.setupParam.ADC_ADS1231_filterN = 20;
+  App.setupParam.ADC_ADS1231_filterN = 100;
   App.setupParam.ADC_ADS1231_shift = 0.0f;
   App.setupParam.ADC_ADS1231_kMul = 1.0f;
   // ------------------------ ADC_ADS1231 END ------------------------ //
@@ -238,6 +238,9 @@ void app_adc_filter_init()
   return;
 }
 
+// #define T_BOARD_ON_HEATING_AUTO    (40.0) // Для отладки
+// #define T_BOARD_OFF_HEATING_AUTO   (45.0) // Для отладки
+// #define T_BOARD_OFF_HEATING_ALWAYS (50.0) // Для отладки
 #define T_BOARD_ON_HEATING_AUTO    (20.0)
 #define T_BOARD_OFF_HEATING_AUTO   (30.0)
 #define T_BOARD_OFF_HEATING_ALWAYS (40.0)
@@ -301,11 +304,13 @@ void app_update_reg()
 
 #define ADC_ADS1251_MAX_VAL (float)(4194303.0f)
 #define ADC_ADS1251_REF_VOLT (float)(2.5f)
-#define ADC_ADS1251_REF_K (float)(0.654761905f)
+// #define ADC_ADS1251_REF_K (float)(0.654761905f) // Исходник
+#define ADC_ADS1251_REF_K (float)(0.6580358f) // V2 с резисторами 120 Ом в цепи питания по "+" и "-", увеличили диапазон в 3 раза
 
 #define ADC_ADS1231_MAX_VAL (float)(8388607.0f)
 #define ADC_ADS1231_REF_VOLT (float)(2.5f)
-#define ADC_ADS1231_K (float)(0.757257047f)
+// #define ADC_ADS1231_K (float)(0.76238f) // Исходник
+#define ADC_ADS1231_K (float)(0.7661919f) // V2 с резисторами 120 Ом в цепи питания по "+" и "-", увеличили диапазон в 3 раза
 
 void app_adc_data_filter(uint32_t ADC_Buf_raw, ADC_enum adc)
 {
